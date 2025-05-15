@@ -21,9 +21,10 @@
             <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-full">
                 {{-- Import/Export --}}
                 <form id="importForm" action="{{ route('employees.import') }}" method="POST"
-                    enctype="multipart/form-data" class="flex flex-wrap items-center gap-3">
+                    enctype="multipart/form-data" class="flex flex-wrap items-center gap-3"
+                    onsubmit="return validateFile()">
                     @csrf
-                    <input type="file" name="file" required accept=".csv, .xls, .xlsx"
+                    <input type="file" id="fileInput" name="file" required accept=".csv, .xls, .xlsx"
                         class="w-full sm:w-auto rounded border border-neutral-600 bg-neutral-800 px-4 py-2 text-white file:mr-4 file:rounded file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white hover:file:bg-blue-500" />
                     <button type="submit"
                         class="inline-flex items-center gap-2 rounded bg-green-600 px-6 py-2 text-white hover:bg-green-500 shadow">Import</button>
@@ -168,6 +169,18 @@
 
     {{-- Alpine Script --}}
     <script>
+        function validateFile() {
+            const fileInput = document.getElementById('fileInput');
+            const filePath = fileInput.value;
+            const allowedExtensions = /(\.csv|\.xls|\.xlsx)$/i;
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Please upload a valid CSV or Excel file (.csv, .xls, .xlsx)');
+                fileInput.value = '';
+                return false;
+            }
+            return true;
+        }
+
         function employeeModal() {
             return {
                 showModal: false,
